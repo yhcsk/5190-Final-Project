@@ -1,7 +1,7 @@
 # yhcsk.github.io
+
 5190 final project
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/a-5mB3GB)
-
 
 **Team Number:** 29
 
@@ -34,7 +34,7 @@ The intended purpose is to provide an **autonomous early-response safety device*
 <<<<<<< HEAD
 *Show your high level design, as done in WS1 and WS2. What are the critical components in your system? How do they communicate (I2C?, interrupts, ADC, etc.)? What power regulation do you need?*
 
-![1761438461446](image/README/1761438461446.png)
+![1761438461446](image/README/图片1.png)
 
 ### 4. Design Sketches
 
@@ -119,7 +119,6 @@ The device will be demonstrated  indoors , on a fire-safe testing platform. The 
 | MVP Demo<br />(week of 11/22) | Minimal Viable Product working end-to-end:<br />– Detects flame, rotates nozzle, sprays water, stops when extinguished.<br />– Manual reset and safe shutdown verified.                                                                                | **A :** ensures mechanical stability & wiring,<br />**B :** handles firmware tuning (thresholds/timing),<br />**C :** prepares test plan, video, and poster draft.                       |
 | Final Demo<br />(12/3~12/4)   |                                                                                                                                                                                                                                                          | **A:** finalize hardware packaging & power wiring.<br />**B:** optimize code (debouncing, servo motion smoothing).<br />C:                                                                     |
 
-
 | **C:**lead presentation, compile final documentation, manage demo safety & logistics. |
 | ------------------------------------------------------------------------------------- |
 
@@ -140,9 +139,69 @@ The device will be demonstrated  indoors , on a fire-safe testing platform. The 
 
 ### Last week's progress
 
+During the previous sprint, significant progress was made on the core hardware and software modules of the Smart Fire-Fighting System. Each subsystem was optimized, tested independently, and prepared for integration.
+
+**Servo Motor Drive Module**
+
+* Completed GPIO multiplexing and configuration for PWM output.
+* Achieved stable and smooth control of servo angle for directional flame targeting.
+* Verified that both upper and lower servos respond correctly to PWM commands.
+
+**Flame Sensor Module**
+
+* Fully implemented the flame sensor data acquisition module.
+* Configured **ADC1_IN5 (PA0)** as an analog input and enabled ASCR (the analog switch required for the STM32L4 series).
+* Verified correct ADC response:
+  * **0V → ~0 ADC** ,
+  * **3.3V → ~4091 ADC** ,
+  * Stable ADC variation with changes in flame intensity.
+* Ensured reliable, noise-free readings for future threshold detection logic.
+
+**Water Pump Driver Module**
+
+* Completed the full circuit design and hardware implementation of the water pump driver.
+* Implemented relay-based isolation:
+  * STM32 outputs 3.3 V to drive relay coil.
+  * Relay closes → 12 V powers the water pump.
+* Verified correct actuation:  **MCU → Relay → Pump** , demonstrating reliable activation and shutdown control.
+
 ### Current state of project
 
+The project is now transitioning from modular development to  **full system-level integration** . All major hardware blocks—servo control, sensor acquisition, and pump actuation—are functioning independently and have been validated.
+
+The current focus is:
+
+* Integrating all modules into a unified firmware framework.
+* Implementing the required SRS items for Week 3 of the project timeline, including:
+  * **SRS-01:** ADC sampling every 100 ms
+  * **SRS-02/05:** Servo angle determination for directional extinguishing
+  * **SRS-03:** Pump activation for 5 seconds or until safe readings detected
+  * **SRS-04:** Flame threshold detection logic
+  * **SRS-06:** Serial output logging
+
+At this stage, the system can read sensor data, move servos, and drive the pump reliably. The upcoming work ties all of this together into a functional autonomous fire-fighting unit.
+
 ### Next week's plan
+
+Next sprint will focus on completing the core system behavior and ensuring smooth interaction among subsystems.
+
+**Planned Tasks**
+
+1. **Full Firmware Integration**
+   * Connect flame sensor readings → threshold logic → servo positioning → pump triggering.
+   * Implement state machine:  *Idle → Detecting → Aiming → Extinguishing → Safe* .
+2. **Directional Flame Localization**
+   * Implement servo scanning routine (horizontal + vertical).
+   * Bind ADC readings to angle tracking to determine flame position.
+3. **Safety and Reliability Logic**
+   * Add conditions to avoid false triggers.
+   * Use temporal filtering (e.g., consecutive readings) to confirm flame presence.
+4. **System Debugging + Serial Output**
+   * Print ADC values, servo angles, and pump states for debugging.
+   * Verify pump timing and extinguishing logic.
+5. **Final Integration Testing**
+   * End-to-end test with real flame source.
+   * Adjust threshold parameters for stable performance.
 
 ## MVP Demo
 
