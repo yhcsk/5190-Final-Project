@@ -334,9 +334,9 @@ If you’ve never made a GitHub pages website before, you can follow this webpag
 
 ### 2. Images
 
-[Insert final project images here]
+<img src="image/README/1765233845672.png" width="200">
 
-*Include photos of your device from a few angles. If you have a casework, show both the exterior and interior (where the good EE bits are!).*
+<img src="image/README/1765234424214.png" width="700">
 
 ### 3. Results
 
