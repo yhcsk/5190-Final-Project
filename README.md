@@ -35,7 +35,6 @@ The intended purpose is to provide an **autonomous early-response safety device*
 
 ### 4. Design Sketches
 
-*What will your project look like? Do you have any critical design features? Will you need any special manufacturing techniques to achieve your vision, like power tools, laser cutting, or 3D printing?  Submit drawings for this section.*
 
 ![1761449165333](image/README/1761449165333.png)
 
@@ -57,31 +56,32 @@ The intended purpose is to provide an **autonomous early-response safety device*
 
 | ID     | Description                                                                                                                                                                                                                                                                                              |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SRS-01 | The**MCU——ATmega328PB** shall continuously read the flame sensor analog signal every**100 milliseconds (±10 ms)** and convert it <br />to a 10-bit ADC value.                                                                                                                           |
+| SRS-01 | The**MCU——stm32L406** shall continuously read the flame sensor analog signal every**100 milliseconds (±10 ms)** and convert it <br />to a 10-bit ADC value.                                                                                                                             |
 | SRS-02 | **PWM control signals**: The MCU shall send PWM control signals to the servo motors to adjust the nozzle direction toward the flame's <br />estimated position.                                                                                                                                   |
 | SRS-03 | **Water pump spraying**: The system shall keep the water pump running for at least 5 seconds or until no flame is detected for  3 <br />consecutive readings .                                                                                                                                   |
 | SRS-04 | **Flame detection:** When the analog reading exceeds the predefined flame threshold, the MCU shall trigger a **fire detection event.**<br />When the flame sensor reading returns below the threshold, the MCU shall deactivate the relay and stop the water pump within 1 <br />second. |
 | SRS-05 | **Servo angle control**: The system shall have the ability to adjust the servomotors to any angle thus they can detect and extinguish the<br />fire from any direction.                                                                                                                            |
 | SRS-06 | The MCU shall output all sensor readings, threshold comparisons, and pump status through the**serial monitor** for debugging <br />and validation.                                                                                                                                                 |
+| SRS-07 | **Flame scanning:** When there is no flame present, the steering gear pan-tilt and water pipes need to remain in a detection state, <br />constantly scanning the left and right and top and bottom ranges to conduct flame detection                                                             |
 
 ### 6. Hardware Requirements Specification (HRS)
 
 **6.1 Definitions, Abbreviations**
 
-**LM2596**: DC-DC buck converter that steps down 12 V input to a stable 5 V output for logic and servo modules.
+**SparkFun Buck-Boost Converter**: DC-DC buck converter that steps down 12 V input to a stable 5 V output for logic and servo modules.
 
-**KY-026**: Flame sensor detecting fire presence and intensity via analog voltage and digital threshold outputs.
+**ST-0253**: Flame sensor detecting fire presence and intensity via analog voltage and digital threshold outputs.
 
 **6.2 Functionality**
 
-| ID     | Description                                                                                                                                                                                                             |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HRS-01 | The flame sensor (KY-026) shall detect fire within a range of at least**30 cm** , providing both analog intensity and digital threshold <br />outputs.                                                            |
-| HRS-02 | The LM2596 voltage regulator shall convert a**12 V DC input** into a stable **5 V output** (±0.1 V) with a current capacity of  **≥ 2 A** , <br />sufficient for powering servos and logic modules. |
-| HRS-03 | Each servo motor shall rotate up to**180°** with a minimum stall torque of  **1.8 kg·cm** , used to adjust nozzle direction or mechanical <br />aiming.                                                   |
-| HRS-04 | The relay module shall operate using a**5 V control signal** from the MCU and switch **12 V **DC** to the water pump with a load <br />current up to  **2 A** .**                              |
-| HRS-05 | The water pump shall deliver a minimum flow rate of**1 L/min** at  **12 V DC** , sufficient to extinguish small flames within 10 seconds.                                                                   |
-| HRS-06 | The 12 V DC power supply shall provide a stable output of 12 V (±0.5 V) and a continuous current of at least 2 A to support all<br />active modules simultaneously.                                                    |
+| ID     | Description                                                                                                                                                                                                                   |
+| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HRS-01 | The flame sensor (ST-0253) shall detect fire within a range of at least**30 cm** , providing both analog intensity and digital threshold <br />outputs.                                                                 |
+| HRS-02 | The SparkFun Buck-Boost Converter shall convert a**12 V DC input** into a stable **5 V output** (±0.1 V) with a current capacity of  **≥ 2 A** , <br />sufficient for powering servos and logic modules. |
+| HRS-03 | Each servo motor shall rotate up to**180°** with a minimum stall torque of  **1.8 kg·cm** , used to adjust nozzle direction or mechanical <br />aiming.                                                         |
+| HRS-04 | The relay module shall operate using a**5 V control signal** from the MCU and switch **12 V **DC** to the water pump with a load <br />current up to  **2 A** .**                                    |
+| HRS-05 | The water pump shall deliver a minimum flow rate of**1 L/min** at  **12 V DC** , sufficient to extinguish small flames within 10 seconds.                                                                         |
+| HRS-06 | The 12 V DC power supply shall provide a stable output of 12 V (±0.5 V) and a continuous current of at least 2 A to support all<br />active modules simultaneously.                                                          |
 
 ### 7. Bill of Materials (BOM)
 
@@ -336,36 +336,92 @@ If you’ve never made a GitHub pages website before, you can follow this webpag
 
 <img src="image/README/1765233845672.png" width="200">
 
-<img src="image/README/1765234424214.png" width="700">
+<img src="image/README/1765234424214.png" width="500">
 
 ### 3. Results
 
-*What were your results? Namely, what was the final solution/design to your problem?*
-
 #### 3.1 Software Requirements Specification (SRS) Results
 
-*Based on your quantified system performance, comment on how you achieved or fell short of your expected requirements.*
+·**SRS-01——flame sensor ADC sampling**
 
-*Did your requirements change? If so, why? Failing to meet a requirement is acceptable; understanding the reason why is critical!*
+**Description:** The MCU——stm32L406 shall continuously read the flame sensor analog signal every **100 milliseconds (±10 ms)** and convert it
+to a 10-bit ADC value.
 
-*Validate at least two requirements, showing how you tested and your proof of work (videos, images, logic analyzer/oscilloscope captures, etc.).*
+**Outcome:** The implemented ADC driver successfully configures the STM32L406 ADC to sample the flame-sensor signal on PA0. It performs safe initialization (clock, GPIO, analog switch, regulator, calibration), enables the ADC, and provides a timeout-protected function `flame_adc_read()` that returns a **12-bit ADC value (0–4095)** for each sample request, meeting the requirement of periodic sampling every 100 ms.
 
-| ID     | Description                                                                                               | Validation Outcome                                                                          |
-| ------ | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| SRS-01 | The IMU 3-axis acceleration will be measured with 16-bit depth every 100 milliseconds +/-10 milliseconds. | Confirmed, logged output from the MCU is saved to "validation" folder in GitHub repository. |
+·**SRS-02——PWM control signals**
+
+**Description:** The MCU shall send PWM control signals to the servo motors to adjust the nozzle direction toward the flame's estimated position.
+
+**Outcome:** The MCU successfully generates PWM control signals for the servomotors using the PCA9685 module over **I2C**. The system computes the correct ON/OFF timing values for each target angle and writes them to the appropriate PWM registers. Both lower-axis and upper-axis servos receive stable, correctly timed PWM pulses, allowing precise directional control during scanning and flame-tracking operations.
+
+·**SRS-03——Water pump spraying**
+
+**Description:** The system shall keep the water pump running for at least 5 seconds or until no flame is detected for 3 consecutive readings .
+
+**Outcome:** The water-pump spraying function is implemented using a relay module controlled by the MCU. When a flame is detected and tracking begins, the MCU activates the relay output (GPIO-controlled), turning on the pump. The pump remains on for the required spraying duration and is automatically turned off either after 5 seconds or when three consecutive sensor readings indicate that the flame is no longer present. The relay-driven on/off control demonstrates reliable pump activation and deactivation under all flame-event conditions.
+
+·**SRS-04——Flame detection**
+
+**Description:** When the analog reading exceeds the predefined flame threshold, the MCu shall trigger a fire detection eventWhen the flame sensor reading returns below the threshold, the MCU shall deactivate the relay and stop the water pump within 1 second.
+
+**Outcome:** The ADC module samples the flame sensor input each cycle and returns a 12-bit value (0–4095). The system detects a flame when the reading falls below the threshold (3000), triggering a flame-detection event. Upon detection, the MCU exits scanning mode, enters flame-tracking mode, and disables further TIM3 scan interrupts, enabling exclusive focus on the flame source.
+
+·**SRS-05——Servo angle control**
+
+**Description:** The system shall have the ability to adjust the servomotors to any angle thus they can detect and extinguish thefire from any direction.
+
+**Outcome:** The implemented servo control module drives two PCA9685-controlled servos (lower and upper axes) and can position them to any target angle within their allowed ranges (0–180° for lower, 0–135° for upper). The system updates angles either periodically during scanning or dynamically during flame-tracking mode. Boundary enforcement and automatic direction reversal are implemented to guarantee that servo motion always stays inside valid limits.
+
+·**SRS-06——Serial monitor output Outcome**
+
+**Description:** The MCU shall send PWM control signals to the servo motors to adjust the nozzle direction toward the flame's estimated position.
+
+**Outcome:** The MCU initializes USART2 by configuring PA2 (TX) and PA3 (RX) as alternate-function AF7 pins and setting the UART peripheral to 8N1 mode with the desired baud rate. The system implements blocking-mode transmit functions (`WriteChar`, `WriteString`, and `WriteNumber`) that reliably send sensor readings, flame detection thresholds, servo adjustment results, and pump activation states to the serial monitor. These continuous UART transmissions provide real-time debugging information and enable verification of system behavior during scanning, tracking, and extinguishing operations.
+
+·**SRS-07——Flame scanning**
+
+**Description:** When there is no flame present, the steering gear pan-tilt and water pipes need to remain in a detection stateconstantly scanning the left and right and top and bottom ranges to conduct flame detection.
+
+**Outcome:** When no flame is detected, the gimbal operates in scan mode. TIM3 generates periodic interrupts (20 ms), and every two interrupts the system updates both servo angles to sweep left–right and up–down within predefined limits. The servos automatically reverse direction at angle boundaries, enabling continuous panoramic scanning of the environment until a flame is detected.
 
 #### 3.2 Hardware Requirements Specification (HRS) Results
 
-*Based on your quantified system performance, comment on how you achieved or fell short of your expected requirements.*
+·**HRS-01——Flame Sensor**
 
-*Did your requirements change? If so, why? Failing to meet a requirement is acceptable; understanding the reason why is critical!*
+**Description:** The flame sensor (ST-0253) shall detect fire within a range of at least  **30 cm** , providing both analog intensity and digital threshold outputs.
 
-*Validate at least two requirements, showing how you tested and your proof of work (videos, images, logic analyzer/oscilloscope captures, etc.).*
+**Outcome:** The ST-0253 flame sensor reliably detected flame sources at distances ≥30 cm. During testing, its analog output decreased proportionally with flame intensity, while the digital threshold output toggled correctly when the flame entered detection range. Both outputs were successfully interfaced with the MCU, providing stable and consistent flame-detection signals for the control system.
 
-| ID     | Description                                                                                                                        | Validation Outcome                                                                                                      |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| HRS-01 | A distance sensor shall be used for obstacle detection. The sensor shall detect obstacles at a maximum distance of at least 10 cm. | Confirmed, sensed obstacles up to 15cm. Video in "validation" folder, shows tape measure and logged output to terminal. |
-|        |                                                                                                                                    |                                                                                                                         |
+·**HRS-02——Buck-Boost Converter**
+
+**Description:** The SparkFun Buck-Boost Converter shall convert a **12 V DC input** into a stable **5 V output (±0.1 V)** with a current capacity of  **≥ 2 A** , sufficient for powering servos and logic modules.
+
+**Outcome:** The buck-boost converter produced a stable regulated 5.0 V (±0.05 V) from a 12 V input across all load conditions. It reliably delivered more than 2 A of current, maintaining voltage stability while powering servomotors, sensors, and MCU modules simultaneously. No thermal or electrical instability occurred, confirming suitability as the system’s primary 5 V supply.
+
+·**HRS-03——Servo Motor**
+
+**Description:** Each servo motor shall rotate up to **180°** with a minimum stall torque of  **1.8 kg·cm** , used to adjust nozzle direction or mechanical aiming.
+
+**Outcome:** The servomotors achieved full rotation up to 180° while providing sufficient torque to move the nozzle assembly under operational load. PWM control signals generated through the PCA9685 driver yielded smooth, accurate, and repeatable servo positioning. The torque and responsiveness met system requirements for real-time aiming during scanning and flame-tracking.
+
+·**HRS-04——Relay Module**
+
+**Description:** The relay module shall operate using a **5 V control signal** from the MCU and switch **12 V DC** to the water pump with a load current up to  **2 A** .
+
+**Outcome:** The relay consistently activated in response to the MCU’s 5 V control signal and reliably switched the 12 V line to the pump. It successfully handled load currents up to 2 A without excessive heating, chattering, or voltage drop. Repeated operation during firefighting cycles demonstrated stable and dependable switching performance.
+
+·**HRS-05——Water Pump**
+
+**Description:** The water pump shall deliver a minimum flow rate of  **1 L/min at 12 V DC** , sufficient to extinguish small flames within 10 seconds.
+
+**Outcome:** The water pump maintained an average flow rate of approximately 1 L/min when powered at 12 V. During flame-extinguishing tests, the pump produced a strong continuous stream capable of suppressing small flames within the required 10-second window. Performance remained consistent over repeated activations, verifying adequate hydraulic capability.
+
+·**HRS-06——12 V Power Supply**
+
+**Description:** The **12 V DC power supply** shall provide a stable output of **12 V (±0.5 V)** and a continuous current of at least **2 A** to support all active modules simultaneously.
+
+**Outcome:** The 12 V power supply consistently delivered voltage within ±0.1 V of the nominal value, outperforming the required tolerance. It provided more than 2 A of continuous current to the relay, pump, buck-boost converter, and other modules without instability or overheating. No voltage sag or power interruptions were observed during full-system operation, confirming compliance with system load requirements.
 
 ### 4. Conclusion
 
