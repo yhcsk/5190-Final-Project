@@ -578,14 +578,38 @@ to a 10-bit ADC value.
 
 Reflect on your project. Some questions to address:
 
-* What did you learn from it?
-* What went well?
-* What accomplishments are you proud of?
-* What did you learn/gain from this experience?
-* Did you have to change your approach?
-* What could have been done differently?
-* Did you encounter obstacles that you didn’t anticipate?
-* What could be a next step for this project?
+* **What did you learn from it?**
+
+Through this project, I learned how embedded systems behave when interacting with real-world physical environments. While classroom exercises often focus on idealized models and preconfigured frameworks, this project required me to design every layer—from low-level peripheral drivers to high-level system integration. Implementing ADC, I2C, and timer-based control at the register level gave me a much deeper understanding of hardware timing, power sequencing, and safety considerations. I also learned how mechanical structure, electrical noise, and timing stability directly impact the performance of an embedded system—something that only becomes obvious through hands-on experimentation.
+
+* **What went well?**
+
+Several aspects of the project progressed smoothly. The servo control subsystem worked reliably once the PCA9685 driver was fully implemented, providing stable and smooth motion during both scanning and tracking. The flame sensor ADC readings were also very stable and accurate after calibration, allowing threshold detection to function as expected. The relay-controlled water pump module consistently activated and deactivated on command, integrating seamlessly with the firmware logic. Overall, the system successfully delivered a complete “detect → aim → extinguish” workflow, which validated our architecture and implementation strategy.
+
+* **What accomplishments are you proud of?**
+
+We areparticularly proud of writing the full low-level I2C driver for the PCA9685, including START/STOP conditions, timing configuration, and auto-end handling—something few students attempt without HAL libraries. I also successfully implemented the complete ADC initialization procedure (ASCR, regulator enable, calibration, sampling configuration), ensuring stable and accurate flame sensing. Another accomplishment is the design of the full system state machine, which allows the device to operate autonomously from scanning to extinguishing. Ultimately, the project resulted in a real, physical device capable of putting out actual flames, which is an achievement I am proud of both technically and creatively.
+
+
+* **What did you learn/gain from this experience?**
+
+This project significantly improved my practical engineering skills. I learned how to debug embedded hardware in terms of electrical noise, voltage stability, mechanical vibration, and timing precision. I gained confidence in writing bare-metal drivers instead of relying on library abstractions, which strengthened my understanding of microcontroller internals. Additionally, the experience taught me the importance of early integration testing—modules that work independently may behave unpredictably when combined. I also improved my teamwork, communication, and documentation skills through collaborative development and shared debugging sessions.
+
+* **Did you have to change your approach?**
+
+Yes, we had to significantly change our approach during the development process. In the beginning, our plan was to use a camera paired with a  vision algorithm to detect the flame. This approach would have provided a much wider detection range and the ability to recognize fire direction more intelligently. However, we quickly realized that implementing a reliable flame-recognition algorithm was too far more complex and time-consuming than we expected. Developing a robust model, tuning thresholds, and integrating image processing on limited MCU hardware exceeded the time and computational resources available for this project. As a result, we decided to switch to an analog flame sensor–based solution, which allowed us to focus on embedded control, servo motion, and real-time response. This change enabled us to complete a fully functional system within the project timeline while maintaining reliable detection and tracking performance.
+
+* **What could have been done differently?**
+
+If I were to redo this project, the first major change I would make is redesigning the mechanical and hardware architecture of the servo gimbal. Our current gimbal is too small relative to the size and stiffness of the water tube, which creates excessive internal resistance during operation and leads to significant energy loss. The water tube’s elasticity and weight also place unnecessary load on the servos, causing instability during aiming. Additionally, many of the electrical connections were made using Dupont jumper wires, and the purchased servos had fragile factory-soldered joints that frequently broke during testing. These issues resulted in a lot of unexpected downtime spent repairing or re-securing wires. If I could start over, I would select a stronger servo model, redesign a more robust mechanical mount, and create a custom PCB to replace the loose jumper wiring. I would also reconstruct and reinforce all the electrical connections myself to ensure mechanical durability and long-term reliability. A stronger structural foundation would have greatly improved both the stability and overall performance of the system.
+
+* **Did you encounter obstacles that you didn’t anticipate?**
+
+Yes, one of the biggest unexpected obstacles we encountered was the complexity of combining different servo behaviors into a single, unified control system. Writing the servo movement code for each mode individually—such as the scanning mode and the flame-tracking mode—was straightforward, and both worked perfectly when tested in isolation. However, once we attempted to integrate these modes into one firmware flow, they began interfering with each other’s timing and logic. This caused unpredictable servo motion, irregular angle updates, and behaviors that were extremely difficult to debug. We spent a significant amount of time diagnosing whether the issue came from timing conflicts, interrupt interactions, or state machine transitions. Ultimately, ensuring that the servos behaved consistently across all modes became one of the most time-consuming and challenging parts of the project, far more than we initially anticipated.
+
+* **What could be a next step for this project?**
+
+A meaningful next step for this project would be to upgrade the sensing and mechanical systems to achieve higher accuracy, stability, and scalability. First, the flame-detection module could be replaced with a camera-based computer vision system. Using image recognition would significantly expand the detection range, improve directional accuracy, and enable more advanced capabilities such as flame-size estimation or multi-flame detection. Second, the servos could be upgraded to stronger, higher-torque models that can handle heavier loads and react more smoothly during high-speed motion. Finally, the entire hardware platform should be rebuilt on a larger and more rigid mechanical frame. Our current gimbal and mounting base are too small and flexible, which introduces vibration, resistance, and instability. A redesigned, sturdier platform—potentially with custom-fabricated parts—would greatly enhance reliability and make the system feel more like a deployable product. Together, these improvements could transform the prototype into a much more powerful, precise, and robust autonomous fire-fighting system.
 
 ## References
 
