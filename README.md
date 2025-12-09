@@ -35,7 +35,6 @@ The intended purpose is to provide an **autonomous early-response safety device*
 
 ### 4. Design Sketches
 
-
 ![1761449165333](image/README/1761449165333.png)
 
 ### 5. Software Requirements Specification (SRS)
@@ -337,6 +336,8 @@ If you’ve never made a GitHub pages website before, you can follow this webpag
 <img src="image/README/1765233845672.png" width="200">
 
 <img src="image/README/1765234424214.png" width="500">
+
+![1765243027302](image/README/1765243027302.png)
 
 ### 3. Results
 
