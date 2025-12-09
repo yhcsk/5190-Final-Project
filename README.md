@@ -305,13 +305,13 @@ Next sprint will focus on completing the core system behavior and ensuring smoot
 
 ## MVP Demo
 
-#### 1.Show a system block diagram & explain the hardware implementation.
+### 1. Show a system block diagram & explain the hardware implementation.
 
 ![架构图](image/README/图片1.png)
 
 The system operates using DC power, regulated through a voltage regulator to supply stable power to all components. The flame sensor detects fire and sends an analog signal to the STM32L476 microcontroller, which processes the input and controls the response. The MCU drives servo motors to aim the nozzle toward the flame and activates the relay module, which switches on the water pump to extinguish the fire automatically.
 
-#### 2. Explain your firmware implementation, including application logic and critical drivers you've written.
+### 2. Explain your firmware implementation, including application logic and critical drivers you've written.
 
 The firmware of the Automatic Fire-Fighting System is fully implemented on STM32L476 MCU and is structured into three major layers: peripheral drivers, application logic, and safety control.
 
@@ -372,11 +372,11 @@ The firmware implements two operating modes:
 
 · All servo angles are clamped to avoid mechanical collisions.
 
-#### 3. Demo your device.
+### 3. Demo your device.
 
 [MVP demo](https://drive.google.com/file/d/13E5E8BixaRGWwHYvq5ujCDOpFX5lhONV/view?usp=drive_link)
 
-#### 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
+### 4. Have you achieved some or all of your Software Requirements Specification (SRS)?
 
 We have fully achieved the majority of our Software Requirements Specification (SRS), and the core behaviors of the system are already functional.
 
@@ -392,7 +392,7 @@ We have fully achieved the majority of our Software Requirements Specification (
 
 · **SRS-06:** All sensor readings, servo updates, tracking steps, and pump status are printed through USART2; serial output verifies correct system operation and aids validation.
 
-#### 5. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
+### 5. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
 
 Most of the hardware functionality is already validated in breadboard testing.
 
@@ -408,7 +408,7 @@ Most of the hardware functionality is already validated in breadboard testing.
 
 · **HRS-06:** The 12 V DC power supply provides stable power above 2 A, supporting the pump, servos, relay, and regulator without brown-out or instability.
 
-#### 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
+### 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
 
 Although 80% of the system is working, the remaining system-level tasks focus on mechanical stability and reliability:
 
@@ -444,7 +444,7 @@ Although 80% of the system is working, the remaining system-level tasks focus on
 
 · Increase safety and professionalism during final demo
 
-#### 7. What is the riskiest part remaining of your project?
+### 7. What is the riskiest part remaining of your project?
 
   (1) **Servo-mounted nozzle shaking during pump activation**
 
@@ -464,7 +464,7 @@ Although 80% of the system is working, the remaining system-level tasks focus on
 
 · Needs reinforcement before demo day
 
-#### 8. What questions or help do you need from the teaching team?
+### 8. What questions or help do you need from the teaching team?
 
 (1) **Guidance on safe indoor fire-testing procedures.**
 We want to ensure our demonstration follows the course’s safety standards. Advice on the allowed flame size and recommended testing setup would be extremely helpful.
