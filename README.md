@@ -20,6 +20,8 @@
 
 **GitHub Pages Website URL:** [https://yhcsk.github.io/5190-Final-Project/](https://yhcsk.github.io/5190-Final-Project/)
 
+![架构图](./images/my-architecture.png)
+
 ## Final Project Proposal
 
 ### 1. Abstract
