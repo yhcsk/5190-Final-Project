@@ -376,19 +376,101 @@ The firmware implements two operating modes:
 
 [MVP demo](https://drive.google.com/file/d/13E5E8BixaRGWwHYvq5ujCDOpFX5lhONV/view?usp=drive_link)
 
-
 #### 4.Have you achieved some or all of your Software Requirements Specification (SRS)?
 
-1. Show how you collected data and the outcomes.
+We have fully achieved the majority of our Software Requirements Specification (SRS), and the core behaviors of the system are already functional.
 
-1. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
+· **SRS-01:** ADC sampling is performed repeatedly in the main loop and during flame-tracking; serial logs confirm continuous readings approximately every 100 ms.
 
-   1. Show how you collected data and the outcomes.
-6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
-7. What is the riskiest part remaining of your project?
+· **SRS-02:** PWM servo control is achieved through the PCA9685 driver; both horizontal and vertical servos respond correctly to commanded angles.
 
-   1. How do you plan to de-risk this?
-8. What questions or help do you need from the teaching team?
+· **SRS-03:** Water pump activation and stopping behavior meets requirements; the system sprays continuously during tracking and stops after the flame disappears for more than 5 cycles.
+
+· **SRS-04:** Threshold-based flame detection is functional; the system triggers tracking whenever ADC < 3000 and correctly returns to scanning when the signal rises.
+
+· **SRS-05:** Servo angle positioning is fully implemented; lower servo (0–180°) and upper servo (0–135°) move within clamped limits with direction reversal at boundaries.
+
+· **SRS-06:** All sensor readings, servo updates, tracking steps, and pump status are printed through USART2; serial output verifies correct system operation and aids validation.
+
+#### 5.Have you achieved some or all of your Hardware Requirements Specification (HRS)?
+
+Most of the hardware functionality is already validated in breadboard testing.
+
+· **HRS-01:** The flame sensor (KY-026) reliably detects fire within 30–40 cm; ADC values drop consistently during testing, confirming the required detection range.
+
+· **HRS-02:** The LM2596 regulator outputs a stable 5.03 V from the 12 V input during servo and pump operation, meeting the ±0.1 V stability requirement.
+
+· **HRS-03:** The servo motors achieve their required rotation ranges (180° lower axis and 135° upper axis) and demonstrate sufficient torque to support the nozzle mount.
+
+· **HRS-04:** The 5 V relay successfully switches the 12 V water pump when driven by the MCU, and current draw remains within the 2 A specification.
+
+· **HRS-05:** The water pump provides a flow rate above 1 L/min, confirmed during flame-extinguishing tests where small fires are put out in under 10 seconds.
+
+· **HRS-06:** The 12 V DC power supply provides stable power above 2 A, supporting the pump, servos, relay, and regulator without brown-out or instability.
+
+#### 6.Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
+
+Although 80% of the system is working, the remaining system-level tasks focus on mechanical stability and reliability:
+
+**Remaining Tasks**
+
+  **(1)Fix the water-spray nozzle onto the rotating gimbal**
+
+· Use 3D-printed mount or acrylic bracket
+
+·o Ensure nozzle points forward and does not collide with servos
+
+  **(2)Reinforce the entire mechanical structure**
+
+·Improve servo base rigidity
+
+· Add a metal bracket or laser-cut frame
+
+· Reduce shaking when pump activates
+
+  **(3)Add a secondary flame sensor (optional design improvement)**
+
+· Expands scanning FOV
+
+· Reduces detection blind spots
+
+· Improves tracking precision
+
+  **(4)Cable management & simple enclosure**
+
+· Tie down cables
+
+· Create a simple box or mount for MCU + LM2596 + relay
+
+· Increase safety and professionalism during final demo
+
+#### 7.What is the riskiest part remaining of your project?
+
+  (1) **Servo-mounted nozzle shaking during pump activation**
+
+· The pump generates vibrations that can destabilize the servo platform
+
+· Could reduce tracking accuracy
+
+  (2) **Limited detection coverage with a single flame sensor**
+
+· Blind spots may cause the system to miss flames at high angles or side angles
+
+· Adding a second sensor mitigates this but requires extra wiring and tuning
+
+  (3) **Mechanical mounting reliability**
+
+· Inadequate mounting may cause nozzle misalignment or servo overload
+
+· Needs reinforcement before demo day
+
+#### 8.What questions or help do you need from the teaching team?
+
+(1) **Guidance on safe indoor fire-testing procedures.**
+We want to ensure our demonstration follows the course’s safety standards. Advice on the allowed flame size and recommended testing setup would be extremely helpful.
+
+(2) **Recommendations for mechanically securing the nozzle and servo platform.**
+Our current prototype works electrically, but the rotating gimbal still requires structural reinforcement. Suggestions on suitable materials or fabrication methods (e.g., laser-cut acrylic vs. simple brackets) would help us finalize the mechanical design.
 
 ## Final Project Report
 
