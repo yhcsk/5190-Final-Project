@@ -305,13 +305,83 @@ Next sprint will focus on completing the core system behavior and ensuring smoot
 
 ## MVP Demo
 
-1. Show a system block diagram & explain the hardware implementation.
-2. Explain your firmware implementation, including application logic and critical drivers you've written.
-3. Demo your device.
-4. Have you achieved some or all of your Software Requirements Specification (SRS)?
+#### 1.Show a system block diagram & explain the hardware implementation.
 
-   1. Show how you collected data and the outcomes.
-5. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
+![架构图](image/README/图片1.png)
+
+The system operates using DC power, regulated through a voltage regulator to supply stable power to all components. The flame sensor detects fire and sends an analog signal to the STM32L476 microcontroller, which processes the input and controls the response. The MCU drives servo motors to aim the nozzle toward the flame and activates the relay module, which switches on the water pump to extinguish the fire automatically.
+
+#### 2.Explain your firmware implementation, including application logic and critical drivers you've written.
+
+The firmware of the Automatic Fire-Fighting System is fully implemented on STM32L476 MCU and is structured into three major layers: peripheral drivers, application logic, and safety control.
+
+**2.1 Peripheral Drivers Implemented**
+
+(1) **PCA9685 I2C Servo Driver:**
+A complete low-level I2C2 driver was written to control the PCA9685. The firmware manually configures PB10 (SCL) and PB11 (SDA), sets AF4, open-drain mode, and writes the I2C timing registers. A custom write/read routine generates START/STOP conditions and handles auto-end transfers.
+PCA9685 PWM outputs control two servos:
+
+· Lower-axis: 0–180° (scanning horizontally)
+
+·Upper-axis: 0–135° (vertical tilt)
+
+(2) **ADC Driver for Flame Sensor:**
+A full ADC initialization procedure is implemented including enabling analog switch (ASCR), exiting deep-power-down, enabling ADVREGEN, running calibration, configuring SQR1 and SMPR1, and performing single-conversion reads.
+The flame sensor value is converted into 0–4095 and used as the fire-detection threshold.
+
+(3) **USART2 Debugging Interface:**
+Implemented custom TX/RX functions, baud-rate configuration, and number-to-string formatting to print sensor readings, tracking steps, and debugging messages.
+
+(4) **TIM3 Periodic Interrupt Driver (20 ms):**
+TIM3 generates a 20 ms periodic interrupt used to update servo scanning angles during the automatic sweep mode.
+
+**2.2 Application Logic**
+The firmware implements two operating modes:
+
+**(1) Scan Mode (default)**
+
+· TIM3 interrupt increments the gimbal angle every 40 ms.
+
+· Both servos sweep within defined boundaries, reversing direction when limits are reached.
+
+· Each interrupt checks Flame_Detected().
+
+· If flame is detected → switch to tracking mode.
+
+**(2) Flame Tracking Mode**
+
+· TIM3 interrupt is **disabled** to stop scanning.
+
+· Tracking uses hill-climbing logic:
+
+·Move the lower servo slightly
+
+· Read new ADC value
+
+· If signal becomes weaker → reverse direction and apply proportional correction based on error
+
+· Water pump is activated through PA8 via spray()
+
+· If flame signal is lost for 5 cycles → stop pump, reset counters, re-enable TIM3 scanning, return to Scan Mode.
+
+**3. Safety & Recovery Logic**
+
+· Lost-flame detection counter (lose_cnt) prevents false resets.
+
+· ADC timeouts protected with upper-bounded loops.
+
+· All servo angles are clamped to avoid mechanical collisions.
+
+#### 3.Demo your device.
+
+[MVP demo](https://drive.google.com/file/d/13E5E8BixaRGWwHYvq5ujCDOpFX5lhONV/view?usp=drive_link)
+
+
+#### 4.Have you achieved some or all of your Software Requirements Specification (SRS)?
+
+1. Show how you collected data and the outcomes.
+
+1. Have you achieved some or all of your Hardware Requirements Specification (HRS)?
 
    1. Show how you collected data and the outcomes.
 6. Show off the remaining elements that will make your project whole: mechanical casework, supporting graphical user interface (GUI), web portal, etc.
