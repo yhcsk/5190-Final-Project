@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="/images/README/fire_extinguisher.png" width="220">
+  <img src="/image/README/fire_extinguisher.png" width="220">
 </p>
 
 # ESE519 Final Project-F25-T29
@@ -16,9 +16,9 @@
 | Shankai Chen     | skchen@seas.upenn.edu |
 | Yonggeng Wu      | wuyg7@seas.upenn.edu  |
 
-**GitHub Repository URL:** https://github.com/upenn-embedded/final-project-f25-future-lab-three-musketeers-of-upenn.git
+**GitHub Repository URL:** [https://github.com/upenn-embedded/final-project-f25-future-lab-three-musketeers-of-upenn.git](https://github.com/upenn-embedded/final-project-f25-future-lab-three-musketeers-of-upenn.git)
 
-**GitHub Pages Website URL:** [for final submission]*
+**GitHub Pages Website URL:** [https://yhcsk.github.io/5190-Final-Project/](https://yhcsk.github.io/5190-Final-Project/)
 
 ## Final Project Proposal
 
@@ -327,12 +327,7 @@ If you’ve never made a GitHub pages website before, you can follow this webpag
 
 ### 1. Video
 
-[Insert final project video here]
-
-* The video must demonstrate your key functionality.
-* The video must be 5 minutes or less.
-* Ensure your video link is accessible to the teaching team. Unlisted YouTube videos or Google Drive uploads with SEAS account access work well.
-* Points will be removed if the audio quality is poor - say, if you filmed your video in a noisy electrical engineering lab.
+[https://drive.google.com/file/d/1z8tkspf_t_NB75gT_TzPZi-DJj-N_U0S/view](https://drive.google.com/file/d/1z8tkspf_t_NB75gT_TzPZi-DJj-N_U0S/view)
 
 ### 2. Images
 
